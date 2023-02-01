@@ -14,5 +14,37 @@ func NewAuthPSQL(db *sqlx.DB) *AuthPSQL {
 	return &AuthPSQL{db: db}
 }
 
-func (sp AuthPSQL) CreateUser(user entity.User) error                  { return nil }
-func (sp AuthPSQL) GetUser(mail, password string) (entity.User, error) { return entity.User{}, nil }
+func (r AuthPSQL) CreateUser(user entity.User) error {
+	stmt, err := r.db.Prepare("INSERT INTO users(username,password) VALUES($1,$2,$3)")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(user.Username, user.Password)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (r AuthPSQL) ChangeDescription(user entity.User) error {
+	stmt, err := r.db.Prepare("UPDATE users SET description=$1 where id=$2")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(user.Description, user.Id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+func (r AuthPSQL) GetUser(username, password string) (*entity.User, error) {
+	var user *entity.User
+	stmt, err := r.db.Prepare("SELECT * FROM users WHERE username=$1 AND password=$2")
+	if err != nil {
+		return nil, err
+	}
+	row := stmt.QueryRow(user.Description, user.Id)
+	if err = row.Scan(user); err != nil {
+		return nil, err
+	}
+	return user, nil
+}

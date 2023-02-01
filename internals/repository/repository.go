@@ -8,7 +8,8 @@ import (
 
 type Authorization interface {
 	CreateUser(user entity.User) error
-	GetUser(mail, password string) (entity.User, error)
+	ChangeDescription(user entity.User) error
+	GetUser(username, password string) (*entity.User, error)
 }
 
 type UserPost interface {
