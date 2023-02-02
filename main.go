@@ -29,5 +29,5 @@ func main() {
 	handl := handler.NewHandler(serv)
 
 	srv := new(server.Server)
-	log.Fatal(srv.Run(":8080", handl.Routes))
+	log.Fatal(srv.Run(":8080", handl.InitRouter()))
 }
