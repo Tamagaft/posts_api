@@ -14,16 +14,17 @@ func NewAuthPSQL(db *sqlx.DB) *AuthPSQL {
 	return &AuthPSQL{db: db}
 }
 
-func (r AuthPSQL) CreateUser(user entity.User) error {
-	stmt, err := r.db.Prepare("INSERT INTO users(username,password) VALUES($1,$2,$3)")
+func (r AuthPSQL) CreateUser(user entity.User) (int, error) {
+	var userId int
+	stmt, err := r.db.Prepare("INSERT INTO users(username,password) VALUES($1,$2) RETURNING id")
 	if err != nil {
-		return err
+		return userId, err
 	}
-	_, err = stmt.Exec(user.Username, user.Password)
-	if err != nil {
-		return err
+	row := stmt.QueryRow(user.Username, user.Password)
+	if err := row.Scan(&userId); err != nil {
+		return userId, err
 	}
-	return nil
+	return userId, nil
 }
 func (r AuthPSQL) ChangeDescription(user entity.User) error {
 	stmt, err := r.db.Prepare("UPDATE users SET description=$1 where id=$2")
