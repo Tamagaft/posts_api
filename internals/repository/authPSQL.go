@@ -38,14 +38,14 @@ func (r AuthPSQL) ChangeDescription(user entity.User) error {
 	return nil
 }
 func (r AuthPSQL) GetUser(username, password string) (*entity.User, error) {
-	var user *entity.User
-	stmt, err := r.db.Prepare("SELECT * FROM users WHERE username=$1 AND password=$2")
+	var user entity.User
+	stmt, err := r.db.Prepare("SELECT id,Username,COALESCE(description,'') FROM users WHERE username=$1 AND password=$2")
 	if err != nil {
 		return nil, err
 	}
-	row := stmt.QueryRow(user.Description, user.Id)
-	if err = row.Scan(user); err != nil {
+	row := stmt.QueryRow(username, password)
+	if err = row.Scan(&user.Id, &user.Username, &user.Description); err != nil {
 		return nil, err
 	}
-	return user, nil
+	return &user, nil
 }
