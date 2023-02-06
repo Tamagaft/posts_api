@@ -19,5 +19,7 @@ func (h *Handler) InitRouter() *http.ServeMux {
 	r.Handle("/", http.HandlerFunc(h.home))
 	r.Handle("/signup", http.HandlerFunc(h.signUp))
 	r.Handle("/signin", http.HandlerFunc(h.signIn))
+
+	r.Handle("/createpost", h.userIdentity(h.CreatePost))
 	return r
 }
