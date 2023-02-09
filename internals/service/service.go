@@ -9,13 +9,14 @@ type Authorization interface {
 	CreateUser(user entity.User) (int, error)
 	SignIn(username, password string) (string, error)
 	GetUser(id int) (entity.User, error)
+	ParseToken(token string) (int, error)
 }
 
 type UserPost interface {
-	CreatePost(userId string, post entity.Post) error
-	GetPostById(postId string) (entity.Post, error)
-	GetUserPostsRange(part int) ([]entity.Post, error)
-	GetPostAnswers(postId string) ([]entity.Post, error)
+	CreatePost(userId int, post entity.Post) error
+	GetPostById(postId int) (*entity.Post, error)
+	GetUserPostsRange(userId int, part int) ([]entity.Post, error)
+	GetPostAnswers(postId int) ([]entity.Post, error)
 }
 
 type Service struct {

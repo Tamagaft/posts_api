@@ -21,5 +21,7 @@ func (h *Handler) InitRouter() *http.ServeMux {
 	r.Handle("/signin", http.HandlerFunc(h.signIn))
 
 	r.Handle("/createpost", h.userIdentity(h.CreatePost))
+	r.Handle("/getpost", http.HandlerFunc(h.GetPostById))
+	r.Handle("/getuserposts", http.HandlerFunc(h.GetUserPostsRange))
 	return r
 }

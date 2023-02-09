@@ -14,7 +14,7 @@ type Authorization interface {
 
 type UserPost interface {
 	CreatePost(post entity.Post) error
-	GetPostById(postId string) (*entity.Post, error)
+	GetPostById(postId int) (*entity.Post, error)
 	GetUserPostsRange(userId, part int) ([]entity.Post, error)
 }
 

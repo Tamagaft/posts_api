@@ -28,17 +28,17 @@ func (r UserPostPSQL) CreatePost(post entity.Post) error {
 	return nil
 }
 
-func (r UserPostPSQL) GetPostById(postId string) (*entity.Post, error) {
-	var post *entity.Post
+func (r UserPostPSQL) GetPostById(postId int) (*entity.Post, error) {
+	var post entity.Post
 	stmt, err := r.db.Prepare("SELECT * FROM posts WHERE id = $1")
 	if err != nil {
 		return nil, err
 	}
 	row := stmt.QueryRow(postId)
-	if err = row.Scan(post); err != nil {
+	if err = row.Scan(&post.Id, &post.Text, &post.Date, &post.Author); err != nil {
 		return nil, err
 	}
-	return post, nil
+	return &post, nil
 }
 
 func (r UserPostPSQL) GetUserPostsRange(userId, part int) ([]entity.Post, error) {
@@ -53,12 +53,11 @@ func (r UserPostPSQL) GetUserPostsRange(userId, part int) ([]entity.Post, error)
 	}
 	for rows.Next() {
 		post := entity.Post{}
-		err := rows.Scan(&post)
+		err := rows.Scan(&post.Id, &post.Text, &post.Date, &post.Author)
 		if err != nil {
 			return nil, err
 		}
 		posts = append(posts, post)
 	}
-
 	return posts, nil
 }
